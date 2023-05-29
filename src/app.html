@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
+		<!-- Required meta tags-->
 		<meta charset="utf-8" />
 		<link rel="icon" href="%sveltekit.assets%/favicon.png" />
-		<meta name="viewport" content="width=device-width" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover"
+		/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<!-- Color theme for statusbar (Android only) -->
+		<meta name="theme-color" content="#2196f3" />
+		<!-- Framework7 styles -->
+		<link rel="stylesheet" href="../node_modules/framework7/framework7-bundle.min.css" />
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
 		<div style="display: contents">%sveltekit.body%</div>
+		<!-- Scripts will be auto injected -->
 	</body>
 </html>
