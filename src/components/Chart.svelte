@@ -3,20 +3,28 @@
 	import { onMount } from 'svelte';
 	import type { GroupOilData } from '../routes/+page.server';
 
-	export let inputData: GroupOilData[];
+	export let data: GroupOilData[];
 
 	onMount(() => {
-		const datasets = createDataSet(inputData);
+		const datasets = createDataSet(data);
 
 		Chart.register(...registerables);
+		const labels = data[0].prices.map((e) => new Date(e.date).toLocaleDateString());
 		new Chart(document.getElementById('line-chart') as ChartItem, {
 			type: 'line',
 			data: {
-				labels: ['test1', 'test2'],
+				labels: labels,
 				datasets: datasets
 			}
 		});
 	});
+
+	const getRandomColor = () => {
+		const r = Math.floor(Math.random() * 256);
+		const g = Math.floor(Math.random() * 256);
+		const b = Math.floor(Math.random() * 256);
+		return `rgb(${r}, ${g}, ${b})`;
+	};
 
 	function createDataSet(inputData: GroupOilData[]) {
 		const datasets: any = [];
@@ -24,13 +32,10 @@
 		inputData.forEach((data, index) => {
 			const dataset = {
 				label: `${data.gallon} Gallon(s)`,
-				data: data.prices.map((priceData) => ({
-					x: new Date(priceData.date),
-					y: priceData.price
-				})),
-				borderColor: 'rgb(75, 192, 192)',
+				data: data.prices.map((priceData) => priceData.price),
+				borderColor: getRandomColor(),
 				fill: false,
-				tension: 0.1
+				tension: 0.5
 			};
 
 			datasets.push(dataset);
@@ -41,4 +46,4 @@
 	}
 </script>
 
-<div style="width: 800px;"><canvas id="line-chart" /></div>
+<div style="width: 400px;"><canvas id="line-chart" /></div>

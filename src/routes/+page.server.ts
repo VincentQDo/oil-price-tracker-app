@@ -10,7 +10,7 @@ export interface OilPriceData {
 export interface GroupOilData {
 	gallon: number;
 	prices: {
-		date: string;
+		date: Date;
 		price: number;
 	}[];
 }
@@ -62,7 +62,7 @@ function groupOilPrice(scanResults: OilPriceData[]) {
 		const existingGroup = groupData.find((group) => group.gallon === item.gallons);
 		if (existingGroup) {
 			existingGroup.prices.push({
-				date: item.date,
+				date: new Date(item.date),
 				price: item.price
 			});
 		} else {
@@ -70,12 +70,15 @@ function groupOilPrice(scanResults: OilPriceData[]) {
 				gallon: item.gallons,
 				prices: [
 					{
-						date: item.date,
+						date: new Date(item.date),
 						price: item.price
 					}
 				]
 			});
 		}
+	});
+	groupData.forEach((e) => {
+		e.prices.sort((a, b) => (a.date < b.date ? -1 : 1));
 	});
 	return groupData;
 }
