@@ -7,6 +7,14 @@ export interface OilPriceData {
 	gallons: number;
 }
 
+export interface GroupOilData {
+	gallon: number;
+	prices: {
+		date: string;
+		price: number;
+	}[];
+}
+
 export async function load({ params }) {
 	const awsConfig = {
 		region: 'us-east-1',
@@ -30,8 +38,44 @@ export async function load({ params }) {
 
 	items.Items?.forEach((item) => scanResults.push(item as OilPriceData));
 	dbParams.ExclusiveStartKey = items.LastEvaluatedKey;
+	const options = {
+		weekday: 'long',
+		year: 'numeric',
+		month: 'short',
+		day: 'numeric'
+	} as Intl.DateTimeFormatOptions;
+	scanResults.map((e) => {
+		const dateObject = new Date(e.date);
+		return (e.date = dateObject.toLocaleDateString('en-us', options));
+	});
+	const groupData = groupOilPrice(scanResults);
+	console.log('Done parsing data: ', groupData);
 
-	scanResults.sort((a, b) => (a.date < b.date ? 1 : -1));
-	console.log('Done parsing data: ', scanResults);
-	return { scanData: scanResults };
+	return { oilData: groupData };
+}
+
+function groupOilPrice(scanResults: OilPriceData[]) {
+	const groupData: GroupOilData[] = [];
+
+	// Group the data by date
+	scanResults.forEach((item) => {
+		const existingGroup = groupData.find((group) => group.gallon === item.gallons);
+		if (existingGroup) {
+			existingGroup.prices.push({
+				date: item.date,
+				price: item.price
+			});
+		} else {
+			groupData.push({
+				gallon: item.gallons,
+				prices: [
+					{
+						date: item.date,
+						price: item.price
+					}
+				]
+			});
+		}
+	});
+	return groupData;
 }
