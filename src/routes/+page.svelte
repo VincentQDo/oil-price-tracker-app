@@ -4,3 +4,5 @@
 
 	export let data;
 </script>
+
+<PriceCard data={data.oilData[0]} />

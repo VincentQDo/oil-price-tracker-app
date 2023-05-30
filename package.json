@@ -37,16 +37,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@svelteuidev/composables": "^0.12.1",
-		"@svelteuidev/core": "^0.12.1",
-		"@svelteuidev/dates": "^0.12.1",
-		"@svelteuidev/motion": "^0.12.1",
-		"@svelteuidev/preprocessors": "^0.12.1",
-		"@svelteuidev/prism": "^0.12.1",
 		"aws-sdk": "^2.1386.0",
-		"chart.js": "^4.3.0",
-		"dayjs": "^1.11.7",
-		"framework7": "^8.0.5",
-		"framework7-svelte": "^8.0.5"
+		"chart.js": "^4.3.0"
 	}
 }
