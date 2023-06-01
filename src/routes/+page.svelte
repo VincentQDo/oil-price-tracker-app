@@ -6,3 +6,4 @@
 </script>
 
 <PriceCard data={data.oilData[0]} />
+<Chart data={data.oilData} />

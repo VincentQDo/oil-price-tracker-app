@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Chart, type ChartItem, registerables } from 'chart.js';
 	import { onMount } from 'svelte';
-	import type { GroupOilData } from '../routes/+page.server';
+	import type { GroupOilData, OilPriceData } from '../routes/+page.server';
 
 	export let data: GroupOilData[];
 
@@ -29,10 +29,26 @@
 	function createDataSet(inputData: GroupOilData[]) {
 		const datasets: any = [];
 
-		inputData.forEach((data, index) => {
+		// Group data by gallons.
+		const dataByGallons: { [key: number]: OilPriceData[] } = {};
+		inputData.forEach((groupData) => {
+			groupData.prices.forEach((priceData) => {
+				if (!dataByGallons[priceData.gallons]) {
+					dataByGallons[priceData.gallons] = [];
+				}
+				dataByGallons[priceData.gallons].push(priceData);
+			});
+		});
+
+		// Create a dataset for each gallon amount.
+		Object.entries(dataByGallons).forEach(([gallons, prices]) => {
+			// Sort and extract price data.
+			prices.sort((a, b) => a.date.getTime() - b.date.getTime());
+			const data = prices.map((price) => price.price);
+
 			const dataset = {
-				label: `${data.gallon} Gallon(s)`,
-				data: data.prices.map((priceData) => priceData.price),
+				label: `${gallons} Gallon(s)`,
+				data: data,
 				borderColor: getRandomColor(),
 				fill: false,
 				tension: 0.5
