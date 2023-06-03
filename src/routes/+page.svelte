@@ -1,9 +1,14 @@
 <script lang="ts">
-	import Chart from '../components/Chart.svelte';
 	import PriceCard from '../components/PriceCard.svelte';
+	import type { GroupedDataItem } from './+page.server';
 
-	export let data;
+	export let data: { oilData: GroupedDataItem[] };
 </script>
 
-<PriceCard data={data.oilData[0]} />
-<Chart data={data.oilData} />
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+	{#each data.oilData as supplierData}
+		<div>
+			<PriceCard data={supplierData} />
+		</div>
+	{/each}
+</div>

@@ -5,17 +5,25 @@ export interface OilPriceDataScanned {
 	date: string;
 	price: number;
 	gallons: number;
+	supplier_name: string;
+	supplier_url: string;
 }
 
 export interface OilPriceData {
 	date: Date;
 	price: number;
 	gallons: number;
+	supplier_name: string;
+	supplier_url: string;
 }
 
-export interface GroupOilData {
-	date: string;
-	prices: OilPriceData[];
+export interface GroupedData {
+	[supplier: string]: OilPriceData[];
+}
+
+export interface GroupedDataItem {
+	supplier: string;
+	data: OilPriceData[];
 }
 
 export async function load({ params }) {
@@ -51,39 +59,41 @@ export async function load({ params }) {
 		const dateObject = new Date(e.date);
 		return (e.date = dateObject.toLocaleDateString('en-us', options));
 	});
-	const groupData = groupOilPrice(scanResults);
-	console.log('Done parsing data: ', groupData);
+	// const groupData = groupOilPrice(scanResults);
+	const groupedData = groupOilData(scanResults);
+	console.log('Done parsing data: ', groupedData);
 
-	return { oilData: groupData };
+	return { oilData: groupedData };
 }
 
-function groupOilPrice(scanResults: OilPriceDataScanned[]) {
-	const groupData: GroupOilData[] = [];
+function groupOilData(rawData: OilPriceDataScanned[]): GroupedDataItem[] {
+	const groupedData: GroupedData = {};
 
-	// Group the data by date
-	scanResults.forEach((item) => {
-		const existingGroup = groupData.find((group) => group.date === item.date);
-		if (existingGroup) {
-			existingGroup.prices.push({
-				date: new Date(item.date),
-				price: item.price,
-				gallons: item.gallons
-			});
-		} else {
-			groupData.push({
-				date: item.date,
-				prices: [
-					{
-						gallons: item.gallons,
-						date: new Date(item.date),
-						price: item.price
-					}
-				]
-			});
+	rawData.forEach((item) => {
+		const translatedObject: OilPriceData = {
+			date: new Date(item.date),
+			price: item.price,
+			gallons: item.gallons,
+			supplier_name: item.supplier_name,
+			supplier_url: item.supplier_url
+		};
+		const supplier = item.supplier_name;
+
+		if (!groupedData[supplier]) {
+			groupedData[supplier] = [];
 		}
+
+		groupedData[supplier].push(translatedObject);
 	});
-	groupData.forEach((e) => {
-		e.prices.sort((a, b) => (a.date < b.date ? -1 : 1));
-	});
-	return groupData;
+
+	const groupedArray: GroupedDataItem[] = [];
+
+	for (const supplier in groupedData) {
+		groupedArray.push({
+			supplier,
+			data: groupedData[supplier]
+		});
+	}
+
+	return groupedArray;
 }
