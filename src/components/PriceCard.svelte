@@ -1,5 +1,6 @@
 <script lang="ts">
-	import type { GroupedDataItem, OilPriceData } from '../routes/+page.server';
+	import type { ChartConfiguration } from 'chart.js';
+	import type { GroupedDataItem } from '../routes/+page.server';
 	import Chart from './Chart.svelte';
 	import PricePerGallonText from './PricePerGallonText.svelte';
 
@@ -7,22 +8,43 @@
 	const sortedData = [...data.data.sort((a, b) => +b.date - +a.date)];
 	const supplierUrl = sortedData[0].supplier_url;
 	const latestDate = sortedData[0].date;
-	const latestData = sortedData.filter((d) => d.date.toUTCString() === latestDate.toUTCString());
+	const latestData = sortedData.filter(
+		(d) => d.date.toISOString().slice(0, 10) === latestDate.toISOString().slice(0, 10)
+	);
+
+	const colors = [
+		'rgb(255, 99, 132)',
+		'rgb(54, 162, 235)',
+		'rgb(255, 206, 86)',
+		'rgb(75, 192, 192)',
+		'rgb(153, 102, 255)',
+		'rgb(255, 159, 64)'
+	];
+
+	let chartConfig: ChartConfiguration = {
+		type: 'line',
+		data: {
+			labels: sortedData
+				.reverse()
+				.filter((_, index) => index % Math.floor(sortedData.length / 5) === 0)
+				.map((data) => data.date.toLocaleDateString()),
+			datasets: latestData.map((data, index) => ({
+				label: `${data.gallons} Gallon(s)`,
+				data: sortedData.filter((d) => d.gallons === data.gallons).map((d) => d.price),
+				borderColor: colors[index % colors.length],
+				fill: false
+			}))
+		}
+	};
 </script>
 
 <div class="-mt-2 p-2 lg:mt-0 lg:w-full lg:max-w-md lg:flex-shrink-0">
 	<div
 		class="rounded-2xl bg-gray-900 py-10 text-center ring-1 ring-inset ring-gray-100/5 lg:flex lg:flex-col lg:justify-center lg:py-10"
 	>
-		<h1 class="text-5xl pb-4 font-bold tracking-tight text-white">
-			{data.supplier}
-		</h1>
-		<h1 class="text-3xl font-bold tracking-tight text-white">
-			{latestDate.toLocaleDateString()}
-		</h1>
-		{#each latestData as priceData}
-			<PricePerGallonText data={priceData} />
-		{/each}
+		<h1 class="text-5xl pb-4 font-bold tracking-tight text-white">{data.supplier}</h1>
+		<h1 class="text-3xl font-bold tracking-tight text-white">{latestDate.toLocaleDateString()}</h1>
+		{#each latestData as priceData}<PricePerGallonText data={priceData} />{/each}
 		<div class="mx-auto max-w-xs px-8 pb-8">
 			<a
 				href={supplierUrl}
@@ -32,7 +54,7 @@
 			>
 		</div>
 		<div class="pl-6">
-			<!-- <Chart {data} /> -->
+			<Chart config={chartConfig} />
 		</div>
 	</div>
 </div>
