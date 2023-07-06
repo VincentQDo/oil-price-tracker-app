@@ -1,5 +1,5 @@
 <script lang="ts">
-	import PriceCard from '../components/PriceCard.svelte';
+	import PriceCard from '../../components/PriceCard.svelte';
 	import type { GroupedDataItem } from './+page.server';
 
 	export let data: { oilData: GroupedDataItem[] };

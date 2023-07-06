@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { ChartConfiguration } from 'chart.js';
-	import type { GroupedDataItem } from '../routes/+page.server';
 	import Chart from './Chart.svelte';
 	import PricePerGallonText from './PricePerGallonText.svelte';
+	import type { ChartConfiguration } from 'chart.js';
+	import type { GroupedDataItem } from '../routes/(app)/+page.server';
 
 	export let data: GroupedDataItem;
 	const sortedData = [...data.data.sort((a, b) => +b.date - +a.date)];
