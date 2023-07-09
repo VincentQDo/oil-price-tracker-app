@@ -51,4 +51,14 @@
 			Microsoft
 		</button>
 	</div>
+
+	<div class="text-center">
+		<p class="text-white text-md">Don't have an account?</p>
+		<button
+			type="button"
+			class="mt-4 py-2 px-4 bg-green-600 text-white rounded-lg focus:ring-2 focus:ring-green-500 focus:outline-none text-lg font-bold"
+		>
+			Sign up
+		</button>
+	</div>
 </form>
