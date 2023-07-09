@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { OilPriceData } from '../routes/(app)/+page.server';
+	import type { OilPriceData } from '../interfaces/OilPrices';
 
 	export let data: OilPriceData;
 </script>

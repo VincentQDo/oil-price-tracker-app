@@ -1,31 +1,13 @@
 import AWS from 'aws-sdk';
 import type { ScanInput } from 'aws-sdk/clients/dynamodb.js';
+import type {
+	GroupedData,
+	GroupedDataItem,
+	OilPriceData,
+	OilPriceDataScanned
+} from '../../interfaces/OilPrices';
 
-export interface OilPriceDataScanned {
-	date: string;
-	price: number;
-	gallons: number;
-	supplier_name: string;
-	supplier_url: string;
-}
-
-export interface OilPriceData {
-	date: Date;
-	price: number;
-	gallons: number;
-	supplier_name: string;
-	supplier_url: string;
-}
-
-export interface GroupedData {
-	[supplier: string]: OilPriceData[];
-}
-
-export interface GroupedDataItem {
-	supplier: string;
-	data: OilPriceData[];
-}
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export async function load({ params }) {
 	const awsConfig = {
 		region: 'us-east-1',

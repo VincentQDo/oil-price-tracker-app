@@ -1,6 +1,6 @@
 <script lang="ts">
 	import PriceCard from '../../components/PriceCard.svelte';
-	import type { GroupedDataItem } from './+page.server';
+	import type { GroupedDataItem } from '../../interfaces/OilPrices';
 
 	export let data: { oilData: GroupedDataItem[] };
 </script>
