@@ -1,9 +1,6 @@
 <script lang="ts">
-	import Button from './Button.svelte';
 	export let title = '';
 	export let navLinks: { id: string; url: string; label: string }[] = [];
-	export let buttonLabel = '';
-	export let buttonLink = '';
 </script>
 
 <nav class="flex items-center justify-between bg-indigo-800 text-white p-4">
@@ -15,5 +12,5 @@
 			<a href={link.url} class="text-white hover:underline">{link.label}</a>
 		{/each}
 	</div>
-	<Button label={buttonLabel} href={buttonLink} variant="primary" />
+	<slot />
 </nav>
