@@ -27,19 +27,31 @@
 		buttonText: 'Go To Supplier',
 		buttonLink: supplierUrl
 	};
+	const chartLabels = sortedData
+		.reverse()
+		.filter((_, index) => index % Math.floor(sortedData.length / 5) === 0)
+		.map((data) => data.date.toLocaleDateString());
+
+	if (!chartLabels.includes(sortedData[0].date.toLocaleDateString())) {
+		chartLabels.push(sortedData[0].date.toLocaleDateString());
+	}
+	const chartDataSets = latestData.map((data, index) => {
+		const lineData = sortedData.filter((d) => d.gallons === data.gallons).map((d) => d.price);
+		if (lineData.length < chartLabels.length) {
+			lineData.push(sortedData[0].price);
+		}
+		return {
+			label: `${data.gallons} Gallons(s)`,
+			data: lineData,
+			borderColor: colors[index % colors.length],
+			fill: false
+		};
+	});
 	let chartConfig: ChartConfiguration = {
 		type: 'line',
 		data: {
-			labels: sortedData
-				.reverse()
-				.filter((_, index) => index % Math.floor(sortedData.length / 5) === 0)
-				.map((data) => data.date.toLocaleDateString()),
-			datasets: latestData.map((data, index) => ({
-				label: `${data.gallons} Gallon(s)`,
-				data: sortedData.filter((d) => d.gallons === data.gallons).map((d) => d.price),
-				borderColor: colors[index % colors.length],
-				fill: false
-			}))
+			labels: chartLabels,
+			datasets: chartDataSets
 		}
 	};
 </script>
