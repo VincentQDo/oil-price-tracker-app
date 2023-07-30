@@ -36,10 +36,11 @@
 		chartLabels.push(sortedData[0].date.toLocaleDateString());
 	}
 	const chartDataSets = latestData.map((data, index) => {
-		const lineData = sortedData.filter((d) => d.gallons === data.gallons).map((d) => d.price);
-		if (lineData.length < chartLabels.length) {
-			lineData.push(sortedData[0].price);
-		}
+		const gallonData = sortedData.filter((d) => d.gallons === data.gallons);
+		const lineData = gallonData
+			.filter((data) => chartLabels.includes(data.date.toLocaleDateString()))
+			.map((e) => e.price);
+
 		return {
 			label: `${data.gallons} Gallons(s)`,
 			data: lineData,
