@@ -8,7 +8,7 @@
 
 <svelte:head>
 	<title>Oil Price Tracker</title>
-	<meta name="description" content="This is where the description goes for SEO" />
+	<meta name="description" content="Heating oil tracker for local in the local Philadelphia area" />
 </svelte:head>
 
 <slot />
