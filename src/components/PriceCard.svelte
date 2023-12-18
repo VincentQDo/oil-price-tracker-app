@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { GroupedDataItem } from '../interfaces/OilPrices';
+	import type { GroupedDataItem, PriceRange } from '../interfaces/OilPrices';
 	import Chart from './Chart.svelte';
 	import Card from './Card.svelte';
 	import PricePerGallonText from './PricePerGallonText.svelte';
@@ -12,6 +12,19 @@
 	const latestDate = sortedData[0].date;
 	const latestData = sortedData.filter(
 		(d) => d.date.toISOString().slice(0, 10) === latestDate.toISOString().slice(0, 10)
+	);
+	const priceRange = sortedData.reduce(
+		(range, item) => {
+			if (range.min === undefined || item.price < range.min) {
+				range.min = item.price;
+			}
+			if (range.max === undefined || item.price > range.max) {
+				range.max = item.price;
+			}
+
+			return range;
+		},
+		{ min: undefined, max: undefined } as PriceRange
 	);
 
 	const colors = [
@@ -27,10 +40,7 @@
 		buttonText: 'Go To Supplier',
 		buttonLink: supplierUrl
 	};
-	const chartLabels = sortedData
-		.reverse()
-		.filter((_, index) => index % Math.floor(sortedData.length / 5) === 0)
-		.map((data) => data.date.toLocaleDateString());
+	const chartLabels = sortedData.reverse().map((data) => data.date.toLocaleDateString());
 
 	if (!chartLabels.includes(sortedData[0].date.toLocaleDateString())) {
 		chartLabels.push(sortedData[0].date.toLocaleDateString());
@@ -45,11 +55,31 @@
 			label: `${data.gallons} Gallons(s)`,
 			data: lineData,
 			borderColor: colors[index % colors.length],
-			fill: false
+			fill: false,
+			pointRadius: 0
 		};
 	});
 	let chartConfig: ChartConfiguration = {
 		type: 'line',
+		options: {
+			scales: {
+				x: {
+					display: true
+				},
+				y: {
+					display: true,
+					title: {
+						display: true,
+						text: 'Price'
+					},
+					suggestedMax: priceRange.max,
+					suggestedMin: priceRange.min,
+					ticks: {
+						stepSize: 0.1
+					}
+				}
+			}
+		},
 		data: {
 			labels: chartLabels,
 			datasets: chartDataSets

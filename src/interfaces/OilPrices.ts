@@ -22,3 +22,8 @@ export interface GroupedDataItem {
 	supplier: string;
 	data: OilPriceData[];
 }
+
+export interface PriceRange {
+	min: number | undefined;
+	max: number | undefined;
+}
