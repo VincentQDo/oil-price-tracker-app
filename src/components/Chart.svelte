@@ -13,4 +13,4 @@
 	});
 </script>
 
-<div style="width: 100%;"><canvas bind:this={chartElement} /></div>
+<div style="width: 100%;"><canvas bind:this={chartElement} height="250px" /></div>
