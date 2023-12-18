@@ -20,7 +20,14 @@ export async function load({ params }) {
 	const dynamodb = new AWS.DynamoDB.DocumentClient();
 
 	const dbParams: ScanInput = {
-		TableName: 'Oil-Price'
+		TableName: 'Oil-Price',
+		FilterExpression: '#gallons = :gallonValue',
+		ExpressionAttributeNames: {
+			'#gallons': 'gallons'
+		},
+		ExpressionAttributeValues: {
+			':gallonValue': 150
+		}
 	};
 
 	const scanResults: OilPriceDataScanned[] = [];
