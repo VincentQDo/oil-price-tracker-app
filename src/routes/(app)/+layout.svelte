@@ -9,6 +9,6 @@
 </svelte:head>
 
 <Header title="Oil Tracker">
-	<Button label="Login" href="/login" variant="primary" />
+	<!-- <Button label="Login" href="/login" variant="primary" /> -->
 </Header>
 <slot />
